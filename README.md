@@ -1,3 +1,25 @@
+# CMPE314 - Lab 1 Gantt Chart
+
+## Project Title
+POSTLA Project
+
+## Team Members
+- Deniz Onat Bayer
+- Umut Sevinç
+- Muhammet Salih Erol
+- Melik Koçhan
+
+## Project Description
+This project focuses on project planning and scheduling for a software engineering project. The Gantt chart demonstrates task durations, dependencies, milestones, and resource allocation among team members.
+
+## Gantt Chart
+
+![Gantt Chart](ganttchart.png)
+
+
+
+
+
 # CMPE314 - Lab 4 Sequence Diagrams
 
 ## Part 1: Library Kiosk
