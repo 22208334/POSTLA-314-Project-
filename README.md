@@ -1,4 +1,4 @@
-# CMPE314 - Lab 1 Gantt Chart
+# CMPE314 - Lab 2 Gantt Chart
 
 ## Project Title
 POSTLA Project
