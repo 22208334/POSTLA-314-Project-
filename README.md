@@ -41,7 +41,7 @@ The Online Bookstore use case diagram represents the main interactions between u
 - Manage Books
 - Update Payment Status
 
-- ![Online Bookstore Use Case Diagram](OnlineBookStore,.png)
+- ![Online Bookstore Use Case Diagram](OnlineBookStore.png)
 
 
 
