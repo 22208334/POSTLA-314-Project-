@@ -72,7 +72,7 @@ The POSTLA use case diagram represents the core functionalities of the POSTLA we
 - Maintain Database
 - Monitor Server Health
 
-- ![POSTLA Use Case Diagram](POSTLADiagrampng)
+- ![POSTLA Use Case Diagram](POSTLADiagram.png)
 
 # CMPE314 - Lab 4 Sequence Diagrams
 
