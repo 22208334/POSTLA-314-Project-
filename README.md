@@ -119,3 +119,29 @@ If the book is valid, the system checks whether the book is overdue. For overdue
 This activity diagram represents the workflow of scheduling a social media post in the POSTLA platform. The process begins when the user logs into the system and opens the scheduling dashboard. The user can create or select a draft post, enter post details, optionally upload media files, and choose a publishing date and time.
 
 The system validates the selected time and checks for scheduling conflicts. If the selected time is invalid or conflicts with another scheduled post, the system suggests corrections and returns the user to the scheduling step. Once the post is successfully scheduled, the system performs parallel activities such as storing the post in the database, displaying it on the calendar dashboard, and creating a cron publishing job. Finally, the post is automatically published at the scheduled time, and the user receives a notification confirming the publishing process.
+
+
+
+# Lab 6 – Data Flow Diagrams
+
+## Part 1 – Library Kiosk
+
+### Context Diagram – Level 0 DFD
+
+![Library Kiosk Context Diagram](lab6-library-context-diagram.png)
+
+### Level 1 DFD
+
+![Library Kiosk Level 1 DFD](lab6-library-level1-dfd.png)
+
+### Level 2 DFD
+
+![Library Kiosk Level 2 DFD](lab6-library-level2-dfd.png)
+
+### Description
+
+The Library Kiosk Data Flow Diagrams describe the Return Book use case. The Context Diagram shows the whole Return Book System as one main process and its interaction with the Student, Library Database, Notification Service, and Shelf Mechanism.
+
+The Level 1 DFD decomposes the Return Book System into five main processes: Validate Book, Check Due Date, Process Fine, Update Inventory, and Send Notification. It also shows the main data stores, including Book Inventory, Borrower Records, and Transaction Log.
+
+The Level 2 DFD expands the Process Fine subprocess. It shows how the system calculates the fine, presents the fine amount to the student, records the payment, updates the borrower record, and stores the fine transaction in the transaction log.
