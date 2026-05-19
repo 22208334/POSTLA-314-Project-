@@ -145,3 +145,29 @@ The Library Kiosk Data Flow Diagrams describe the Return Book use case. The Cont
 The Level 1 DFD decomposes the Return Book System into five main processes: Validate Book, Check Due Date, Process Fine, Update Inventory, and Send Notification. It also shows the main data stores, including Book Inventory, Borrower Records, and Transaction Log.
 
 The Level 2 DFD expands the Process Fine subprocess. It shows how the system calculates the fine, presents the fine amount to the student, records the payment, updates the borrower record, and stores the fine transaction in the transaction log.
+
+
+
+## Part 2 – POSTLA Project
+
+### Context Diagram – Level 0 DFD
+
+![POSTLA Context Diagram](lab6-postla-context-diagram.png)
+
+### Level 1 DFD
+
+![POSTLA Level 1 DFD](lab6-postla-level1-dfd.png)
+
+### Level 2 DFD
+
+![POSTLA Level 2 DFD](lab6-postla-level2-dfd.png)
+
+### Description
+
+The POSTLA Data Flow Diagrams describe the View Calendar Dashboard use case. This use case was selected because it focuses on how scheduled post data, user information, platform connection details, and post status information move through the system.
+
+The Context Diagram shows the POSTLA Calendar Dashboard System as one main process. The User / Creator and Student Club / Community Manager request calendar information from the system. The system retrieves user data, scheduled post data, and post status data from the POSTLA Database. It also checks platform connection status through the Social Media API and communicates with the Notification Service when dashboard updates are needed.
+
+The Level 1 DFD decomposes the calendar dashboard system into six main processes: Validate User, Load Scheduled Posts, Filter Calendar Data, Retrieve Platform Status, Display Calendar Dashboard, and Send Dashboard Notification. The diagram also includes four data stores: User Accounts, Scheduled Posts, Platform Connections, and Post Status Log.
+
+The Level 2 DFD expands the Filter Calendar Data subprocess. It shows how the system receives filter options, validates the selected date range, retrieves matching scheduled posts, checks post status information, organizes the calendar view, and returns the filtered calendar results to the user.
