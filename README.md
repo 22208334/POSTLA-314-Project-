@@ -171,3 +171,7 @@ The Context Diagram shows the POSTLA Calendar Dashboard System as one main proce
 The Level 1 DFD decomposes the calendar dashboard system into six main processes: Validate User, Load Scheduled Posts, Filter Calendar Data, Retrieve Platform Status, Display Calendar Dashboard, and Send Dashboard Notification. The diagram also includes four data stores: User Accounts, Scheduled Posts, Platform Connections, and Post Status Log.
 
 The Level 2 DFD expands the Filter Calendar Data subprocess. It shows how the system receives filter options, validates the selected date range, retrieves matching scheduled posts, checks post status information, organizes the calendar view, and returns the filtered calendar results to the user.
+
+
+
+A modern, web-based social media post scheduling and management dashboard built with React, Node.js, Express, and PostgreSQL. It features a unified engine for multi-platform planning, automated node-cron scheduling, automated status tracking, secure JWT authentication with bcrypt password hashing, a responsive visual content editor with live previews, an interactive calendar view, and a built-in analytics dashboard.
