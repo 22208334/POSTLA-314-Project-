@@ -1,0 +1,1517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>POSTLA — Social Media Scheduler</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #EEF2F7;
+      --bg2:       #E4EAF3;
+      --surface:   #FFFFFF;
+      --surface2:  #F5F8FC;
+      --border:    rgba(140,165,200,0.22);
+      --border2:   rgba(100,140,190,0.35);
+
+      --ink:       #1A2540;
+      --ink2:      #2E3F60;
+      --ink3:      #6278A0;
+      --ink4:      #98ABCC;
+
+      --cyan:      #18B8D4;
+      --cyan-lt:   #7EE1F0;
+      --cyan-dk:   #0F8FA3;
+      --cyan-bg:   rgba(24,184,212,0.10);
+      --cyan-bg2:  rgba(24,184,212,0.18);
+
+      --blue:      #3B82F6;
+      --blue-lt:   #93C5FD;
+      --blue-bg:   rgba(59,130,246,0.09);
+
+      --green:     #22C55E;
+      --green-bg:  rgba(34,197,94,0.10);
+      --red:       #EF4444;
+      --red-bg:    rgba(239,68,68,0.09);
+      --amber:     #F59E0B;
+      --amber-bg:  rgba(245,158,11,0.10);
+
+      --tw:        #1DA1F2;
+      --tw-bg:     rgba(29,161,242,0.10);
+      --ig:        #E1306C;
+      --ig-bg:     rgba(225,48,108,0.09);
+      --li:        #0A66C2;
+      --li-bg:     rgba(10,102,194,0.09);
+
+      --radius:    12px;
+      --radius-lg: 18px;
+      --radius-xl: 24px;
+      --shadow:    0 1px 3px rgba(30,50,100,0.06), 0 4px 16px rgba(30,50,100,0.06);
+      --shadow-md: 0 2px 8px rgba(30,50,100,0.09), 0 8px 32px rgba(30,50,100,0.08);
+      --font:      'DM Sans', sans-serif;
+      --font-head: 'Plus Jakarta Sans', sans-serif;
+      --font-mono: 'DM Mono', monospace;
+    }
+
+    html, body { height: 100%; background: var(--bg); font-family: var(--font); color: var(--ink); }
+
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
+
+    /* ── TOPBAR ── */
+    .topbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      height: 60px;
+      background: #FFFFFF;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 28px;
+    }
+    .logo {
+      font-family: var(--font-head);
+      font-size: 17px; font-weight: 700;
+      color: var(--ink);
+      display: flex; align-items: center; gap: 10px;
+      letter-spacing: 0.1px;
+    }
+    .logo-mark {
+      width: 34px; height: 34px; border-radius: 10px;
+      background: linear-gradient(135deg, var(--cyan) 0%, var(--blue) 100%);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 12px rgba(24,184,212,0.35);
+    }
+    .logo-mark svg { width: 18px; height: 18px; fill: white; }
+    .logo-sub { font-size: 10px; font-weight: 500; letter-spacing: 2px; color: var(--ink4); font-family: var(--font-mono); margin-top: 1px; }
+
+    .nav-tabs {
+      display: flex; gap: 2px;
+      background: var(--bg2);
+      border-radius: 14px;
+      padding: 4px;
+      border: 1px solid var(--border);
+    }
+    .nav-tab {
+      padding: 7px 18px;
+      border-radius: 10px;
+      font-family: var(--font);
+      font-size: 13px; font-weight: 500;
+      color: var(--ink3);
+      background: transparent; border: none; cursor: pointer;
+      transition: all 0.2s;
+      letter-spacing: 0;
+    }
+    .nav-tab:hover { color: var(--ink); background: rgba(255,255,255,0.6); }
+    .nav-tab.active { background: var(--surface); color: var(--cyan-dk); box-shadow: var(--shadow); }
+
+    .user-zone { display: flex; align-items: center; gap: 12px; }
+    .notif-btn {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: var(--surface); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px; cursor: pointer;
+      box-shadow: var(--shadow);
+      transition: all 0.15s;
+    }
+    .notif-btn:hover { background: var(--cyan-bg); border-color: var(--cyan-lt); }
+    .user-avatar {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: linear-gradient(135deg, var(--cyan) 0%, var(--blue) 100%);
+      color: white; font-size: 13px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; box-shadow: 0 3px 10px rgba(24,184,212,0.3);
+      font-family: var(--font-head);
+    }
+
+    /* ── LAYOUT ── */
+    .app-body { display: flex; padding-top: 60px; min-height: 100vh; }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width: 240px; min-width: 240px;
+      background: #F8FAFD;
+      border-right: 1px solid var(--border);
+      min-height: calc(100vh - 60px);
+      padding: 20px 14px;
+      display: flex; flex-direction: column; gap: 2px;
+      position: fixed; top: 60px; bottom: 0; left: 0;
+      overflow-y: auto; z-index: 10; isolation: isolate;
+    }
+    .sidebar-section {
+      font-size: 10px; font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase;
+      color: var(--ink4); padding: 14px 12px 6px;
+      font-family: var(--font-mono);
+    }
+    .sidebar-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 12px; border-radius: 10px;
+      cursor: pointer; font-size: 13px; font-weight: 500;
+      color: var(--ink3); transition: all 0.15s;
+      user-select: none;
+    }
+    .sidebar-item:hover { background: var(--bg2); color: var(--ink); }
+    .sidebar-item.active { background: var(--cyan-bg2); color: var(--cyan-dk); }
+    .sidebar-icon { font-size: 15px; flex-shrink: 0; }
+    .sidebar-badge {
+      margin-left: auto;
+      font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 20px;
+      background: var(--cyan); color: white;
+    }
+    .sidebar-badge.gray  { background: var(--bg2); color: var(--ink4); }
+    .sidebar-badge.green { background: var(--green-bg); color: var(--green); }
+    .sidebar-badge.red   { background: var(--red-bg); color: var(--red); }
+
+    .quick-stat-box {
+      margin: 12px 4px 0;
+      background: linear-gradient(135deg, var(--cyan-bg2) 0%, var(--blue-bg) 100%);
+      border: 1px solid rgba(24,184,212,0.2);
+      border-radius: var(--radius-lg); padding: 16px;
+    }
+    .qs-label { font-size: 10px; font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase; color: var(--ink3); margin-bottom: 4px; font-family: var(--font-mono); }
+    .qs-value { font-family: var(--font-head); font-size: 28px; font-weight: 700; color: var(--ink); line-height: 1; }
+    .qs-sub { font-size: 11px; color: var(--ink3); margin-top: 3px; }
+
+    /* ── CONTENT ── */
+    .content { margin-left: 240px; flex: 1; position: relative; z-index: 1; }
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    /* ── COMPOSE ── */
+    .compose-wrap {
+      display: grid; grid-template-columns: 1fr 320px;
+      gap: 24px; padding: 28px 32px;
+      max-width: 1160px;
+    }
+    .page-heading {
+      font-family: var(--font-head);
+      font-size: 20px; font-weight: 700; color: var(--ink);
+      letter-spacing: -0.2px; margin-bottom: 2px;
+    }
+    .page-sub { font-size: 13px; color: var(--ink3); margin-bottom: 22px; font-weight: 400; }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      margin-bottom: 14px;
+      box-shadow: var(--shadow);
+    }
+    .card-title {
+      font-size: 11px; font-weight: 500; letter-spacing: 0.6px;
+      text-transform: uppercase; color: var(--ink4);
+      margin-bottom: 14px; font-family: var(--font-mono);
+    }
+
+    /* platforms */
+    .platform-row { display: flex; gap: 8px; flex-wrap: wrap; }
+    .plat-btn {
+      display: flex; align-items: center; gap: 7px;
+      padding: 6px 14px; border-radius: 24px;
+      border: 1.5px solid var(--border2);
+      background: var(--surface2); cursor: pointer;
+      font-size: 12px; font-weight: 500; color: var(--ink3);
+      transition: all 0.2s; font-family: var(--font);
+    }
+    .plat-btn:hover { background: var(--bg2); }
+    .plat-dot { width: 9px; height: 9px; border-radius: 50%; }
+    .plat-btn.sel-tw { border-color: var(--tw); color: var(--tw); background: var(--tw-bg); }
+    .plat-btn.sel-ig { border-color: var(--ig); color: var(--ig); background: var(--ig-bg); }
+    .plat-btn.sel-li { border-color: var(--li); color: var(--li); background: var(--li-bg); }
+
+    /* editor */
+    .editor-wrap { position: relative; }
+    .post-textarea {
+      width: 100%; min-height: 140px;
+      border: 1.5px solid var(--border2);
+      border-radius: var(--radius);
+      padding: 14px 14px 38px;
+      font-family: var(--font); font-size: 14px; line-height: 1.7;
+      color: var(--ink); background: var(--surface2);
+      resize: vertical; outline: none; transition: all 0.2s;
+    }
+    .post-textarea::placeholder { color: var(--ink4); }
+    .post-textarea:focus { border-color: var(--cyan); background: var(--surface); box-shadow: 0 0 0 3px var(--cyan-bg); }
+    .char-count { position: absolute; bottom: 10px; right: 12px; font-family: var(--font-mono); font-size: 11px; color: var(--ink4); }
+    .char-count.warn { color: var(--red); }
+
+    /* schedule */
+    .sched-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .field-group { display: flex; flex-direction: column; gap: 5px; }
+    .field-label { font-size: 11px; font-weight: 500; letter-spacing: 0.3px; text-transform: uppercase; color: var(--ink3); font-family: var(--font-mono); }
+    .field-input {
+      padding: 9px 13px; border: 1.5px solid var(--border2); border-radius: 10px;
+      font-family: var(--font); font-size: 13px; color: var(--ink);
+      background: var(--surface2); outline: none; transition: all 0.2s; width: 100%;
+    }
+    .field-input:focus { border-color: var(--cyan); background: var(--surface); box-shadow: 0 0 0 3px var(--cyan-bg); }
+    .past-warn { font-size: 12px; color: var(--red); margin-top: 8px; display: none; }
+
+    /* buttons */
+    .action-row { display: flex; gap: 10px; align-items: center; }
+    .btn-primary {
+      padding: 9px 22px;
+      background: linear-gradient(135deg, var(--cyan) 0%, var(--blue) 100%);
+      color: white; border: none; border-radius: 10px;
+      font-family: var(--font); font-size: 13px; font-weight: 600;
+      cursor: pointer; letter-spacing: 0;
+      box-shadow: 0 3px 12px rgba(24,184,212,0.3);
+      transition: all 0.2s;
+    }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 5px 18px rgba(24,184,212,0.4); }
+    .btn-primary:active { transform: scale(0.97); }
+    .btn-ghost {
+      padding: 9px 16px; background: var(--surface2); color: var(--ink3);
+      border: 1.5px solid var(--border2); border-radius: 10px;
+      font-family: var(--font); font-size: 13px; font-weight: 500;
+      cursor: pointer; transition: all 0.15s;
+    }
+    .btn-ghost:hover { background: var(--bg2); color: var(--ink); border-color: var(--cyan-lt); }
+
+    /* preview col */
+    .preview-col { display: flex; flex-direction: column; gap: 16px; }
+    .col-label { font-size: 11px; font-weight: 500; letter-spacing: 0.6px; text-transform: uppercase; color: var(--ink4); font-family: var(--font-mono); margin-bottom: 2px; }
+
+    .preview-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 18px; box-shadow: var(--shadow);
+    }
+    .preview-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .prev-avatar {
+      width: 40px; height: 40px; border-radius: 12px;
+      background: linear-gradient(135deg, var(--cyan) 0%, var(--blue) 100%);
+      color: white; font-family: var(--font-head); font-size: 15px; font-weight: 800;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .prev-uname { font-size: 13px; font-weight: 600; color: var(--ink); }
+    .prev-handle { font-size: 11px; color: var(--ink4); }
+    .prev-body { font-size: 13px; line-height: 1.7; color: var(--ink2); white-space: pre-wrap; word-break: break-word; }
+    .prev-chips { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 10px; }
+    .p-chip { font-size: 10px; font-weight: 700; padding: 3px 9px; border-radius: 20px; }
+    .chip-tw { background: var(--tw-bg); color: var(--tw); }
+    .chip-ig { background: var(--ig-bg); color: var(--ig); }
+    .chip-li { background: var(--li-bg); color: var(--li); }
+
+    .upcoming-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 18px; box-shadow: var(--shadow);
+    }
+    .upcoming-item {
+      padding: 10px 0; border-bottom: 1px solid var(--border);
+      display: flex; flex-direction: column; gap: 5px;
+    }
+    .upcoming-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .upcoming-text { font-size: 12px; color: var(--ink2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .upcoming-meta { display: flex; gap: 6px; align-items: center; }
+    .upcoming-date { font-size: 10px; font-family: var(--font-mono); color: var(--ink4); margin-left: auto; }
+
+    /* ── POSTS LIST ── */
+    .posts-toolbar {
+      padding: 24px 32px 0;
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    }
+    .filter-row { display: flex; gap: 6px; }
+    .filter-btn {
+      padding: 5px 13px; border-radius: 20px;
+      border: 1px solid var(--border2);
+      background: var(--surface); cursor: pointer;
+      font-family: var(--font); font-size: 12px; font-weight: 500;
+      color: var(--ink3); transition: all 0.15s;
+      box-shadow: var(--shadow);
+    }
+    .filter-btn:hover { border-color: var(--cyan-lt); color: var(--cyan-dk); background: var(--cyan-bg); }
+    .filter-btn.active { background: var(--cyan); border-color: var(--cyan); color: white; box-shadow: 0 3px 10px rgba(24,184,212,0.3); }
+
+    .posts-list { padding: 16px 32px; display: flex; flex-direction: column; gap: 10px; }
+    .post-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 16px 20px;
+      display: flex; align-items: flex-start; gap: 14px;
+      box-shadow: var(--shadow); transition: all 0.2s;
+    }
+    .post-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); border-color: var(--border2); }
+    .status-pip { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+    .pip-scheduled { background: var(--cyan); box-shadow: 0 0 6px var(--cyan); }
+    .pip-published  { background: var(--green); box-shadow: 0 0 6px var(--green); }
+    .pip-draft      { background: var(--ink4); }
+    .pip-failed     { background: var(--red); box-shadow: 0 0 6px var(--red); }
+    .post-body-col { flex: 1; min-width: 0; }
+    .post-preview-text { font-size: 13px; color: var(--ink2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 8px; font-weight: 400; }
+    .post-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .status-badge { font-size: 10px; font-weight: 600; letter-spacing: 0.2px; text-transform: uppercase; padding: 2px 8px; border-radius: 20px; }
+    .sb-scheduled { background: var(--cyan-bg2); color: var(--cyan-dk); }
+    .sb-published  { background: var(--green-bg); color: var(--green); }
+    .sb-draft      { background: var(--bg2); color: var(--ink3); }
+    .sb-failed     { background: var(--red-bg); color: var(--red); }
+    .post-date { font-size: 11px; font-family: var(--font-mono); color: var(--ink4); }
+    .post-actions { display: flex; gap: 5px; flex-shrink: 0; }
+    .icon-btn {
+      width: 32px; height: 32px; border: 1px solid var(--border2); border-radius: 9px;
+      background: var(--surface2); cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; color: var(--ink3); transition: all 0.15s;
+    }
+    .icon-btn:hover { background: var(--cyan-bg); border-color: var(--cyan-lt); color: var(--cyan-dk); }
+    .icon-btn.del:hover { background: var(--red-bg); border-color: rgba(239,68,68,0.4); color: var(--red); }
+
+    .empty-state {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 10px; padding: 70px; color: var(--ink4); text-align: center;
+    }
+    .empty-icon { font-size: 40px; opacity: 0.4; }
+    .empty-text { font-family: var(--font-head); font-size: 20px; color: var(--ink2); font-weight: 700; }
+    .empty-sub { font-size: 13px; }
+
+    /* ── CALENDAR ── */
+    .calendar-wrap { padding: 28px 32px; }
+    .cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+    .cal-nav { display: flex; gap: 6px; }
+    .cal-grid {
+      display: grid; grid-template-columns: repeat(7,1fr);
+      gap: 0; background: var(--border);
+      border: 1px solid var(--border); border-radius: var(--radius-xl);
+      overflow: hidden; box-shadow: var(--shadow-md);
+    }
+    .cal-dow {
+      background: var(--surface2); padding: 10px 4px;
+      text-align: center; font-size: 10px; font-weight: 600;
+      letter-spacing: 0.5px; text-transform: uppercase; color: var(--ink3);
+      font-family: var(--font-mono);
+    }
+    .cal-day {
+      background: var(--surface); padding: 9px; min-height: 90px;
+      cursor: pointer; transition: background 0.12s;
+      border-top: 1px solid var(--border);
+    }
+    .cal-day:hover { background: var(--surface2); }
+    .cal-day.other-month { background: var(--bg2); }
+    .cal-day.today { background: var(--cyan-bg); }
+    .cal-day-num { font-size: 12px; font-weight: 500; color: var(--ink4); margin-bottom: 5px; font-family: var(--font-mono); }
+    .cal-day.today .cal-day-num { color: var(--cyan-dk); font-weight: 600; }
+    .cal-event {
+      font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 4px;
+      margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .ev-tw { background: var(--tw-bg); color: var(--tw); }
+    .ev-ig { background: var(--ig-bg); color: var(--ig); }
+    .ev-li { background: var(--li-bg); color: var(--li); }
+
+    /* ── ANALYTICS ── */
+    .analytics-wrap { padding: 28px 32px; display: flex; flex-direction: column; gap: 22px; }
+    .stats-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; }
+    .stat-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 20px;
+      box-shadow: var(--shadow); position: relative; overflow: hidden;
+    }
+    .stat-card::before {
+      content:''; position: absolute; top:0; right:0;
+      width: 80px; height: 80px; border-radius: 50%;
+      background: var(--cyan-bg); transform: translate(25px,-25px);
+    }
+    .stat-label { font-size: 11px; font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase; color: var(--ink4); margin-bottom: 8px; font-family: var(--font-mono); }
+    .stat-value { font-family: var(--font-head); font-size: 30px; font-weight: 700; color: var(--ink); line-height: 1; margin-bottom: 6px; }
+    .stat-delta { font-size: 11px; font-weight: 600; }
+    .delta-up { color: var(--green); }
+    .delta-dn { color: var(--red); }
+    .delta-neutral { color: var(--ink4); }
+
+    .bar-section {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 22px; box-shadow: var(--shadow);
+    }
+    .bar-section-title { font-family: var(--font-head); font-size: 15px; font-weight: 600; color: var(--ink); margin-bottom: 22px; }
+    .bars { display: flex; align-items: flex-end; gap: 10px; height: 140px; }
+    .bar-col { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; }
+    .bar-fill { width: 100%; border-radius: 6px 6px 0 0; min-height: 4px; transition: opacity 0.2s; cursor: pointer; }
+    .bar-fill:hover { opacity: 0.75; }
+    .bar-lbl { font-size: 10px; font-weight: 500; color: var(--ink4); font-family: var(--font-mono); }
+
+    .pf-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; }
+    .pf-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 20px; box-shadow: var(--shadow);
+    }
+    .pf-header { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; color: var(--ink2); margin-bottom: 10px; }
+    .pf-dot { width: 9px; height: 9px; border-radius: 50%; }
+    .pf-count { font-family: var(--font-head); font-size: 28px; font-weight: 700; color: var(--ink); }
+    .pf-sub { font-size: 11px; color: var(--ink4); margin-top: 2px; }
+
+    /* ── MEDIA SELECTOR ── */
+    .media-row { display: flex; gap: 8px; flex-wrap: wrap; }
+    .media-btn {
+      display: flex; align-items: center; gap: 6px;
+      padding: 6px 14px; border-radius: 20px;
+      border: 1px solid var(--border2);
+      background: var(--surface2); cursor: pointer;
+      font-size: 12px; font-weight: 500; color: var(--ink3);
+      font-family: var(--font); transition: all 0.15s;
+    }
+    .media-btn:hover { background: var(--bg2); color: var(--ink); }
+    .media-btn.active { background: var(--cyan-bg2); border-color: var(--cyan); color: var(--cyan-dk); }
+
+    /* ── UPLOAD ZONE ── */
+    .upload-zone {
+      border: 1.5px dashed var(--border2);
+      border-radius: var(--radius);
+      padding: 24px 16px;
+      text-align: center; cursor: pointer;
+      background: var(--surface2);
+      transition: all 0.2s;
+    }
+    .upload-zone:hover { border-color: var(--cyan); background: var(--cyan-bg); }
+    .upload-icon { font-size: 24px; margin-bottom: 8px; }
+    .upload-text { font-size: 13px; font-weight: 500; color: var(--ink2); margin-bottom: 3px; }
+    .upload-sub { font-size: 11px; color: var(--ink4); }
+
+    /* ── EDITOR TOOLBAR ── */
+    .editor-toolbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 2px 2px;
+    }
+    .toolbar-left { display: flex; gap: 4px; }
+    .tool-btn {
+      width: 32px; height: 32px; border-radius: 8px;
+      border: 1px solid var(--border); background: var(--surface2);
+      cursor: pointer; font-size: 15px;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s; color: var(--ink3);
+    }
+    .tool-btn:hover { background: var(--cyan-bg); border-color: var(--cyan-lt); }
+    .tool-btn-ai {
+      font-size: 11px; font-weight: 600; color: var(--cyan-dk);
+      background: var(--cyan-bg); border: 1px solid rgba(24,184,212,0.3);
+      padding: 5px 12px; border-radius: 20px; cursor: pointer;
+      font-family: var(--font); transition: all 0.15s;
+      display: flex; align-items: center; gap: 4px;
+    }
+    .tool-btn-ai:hover { background: var(--cyan-bg2); }
+
+    /* ── EMOJI PICKER ── */
+    .emoji-picker {
+      margin-top: 8px;
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius);
+      padding: 10px;
+      max-height: 180px; overflow-y: auto;
+    }
+    .emoji-grid {
+      display: grid; grid-template-columns: repeat(10, 1fr); gap: 4px;
+    }
+    .emoji-btn {
+      width: 30px; height: 30px; border-radius: 6px; border: none;
+      background: transparent; cursor: pointer; font-size: 17px;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.1s;
+    }
+    .emoji-btn:hover { background: var(--cyan-bg); }
+
+    /* ── NOTIFICATION BELL ── */
+    .notif-wrap { position: relative; }
+    .notif-btn {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: var(--surface); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px; cursor: pointer;
+      box-shadow: var(--shadow); transition: all 0.15s;
+      position: relative;
+    }
+    .notif-btn:hover { background: var(--cyan-bg); border-color: var(--cyan-lt); }
+    .notif-dot {
+      position: absolute; top: 6px; right: 6px;
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--red); border: 2px solid white;
+      animation: pulse-dot 1.5s infinite;
+    }
+    @keyframes pulse-dot {
+      0%,100% { transform: scale(1); }
+      50% { transform: scale(1.3); }
+    }
+    @keyframes bell-shake {
+      0%,100% { transform: rotate(0deg); }
+      20% { transform: rotate(-15deg); }
+      40% { transform: rotate(15deg); }
+      60% { transform: rotate(-10deg); }
+      80% { transform: rotate(10deg); }
+    }
+    .notif-panel {
+      position: absolute; top: 44px; right: 0;
+      width: 320px;
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 8px 32px rgba(30,50,100,0.16);
+      z-index: 200;
+      overflow: hidden;
+      animation: fadeUp 0.2s ease;
+    }
+    .notif-panel-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 16px 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .notif-panel-title { font-size: 13px; font-weight: 600; color: var(--ink); }
+    .notif-clear {
+      font-size: 11px; color: var(--ink4); background: none; border: none;
+      cursor: pointer; font-family: var(--font); transition: color 0.15s;
+    }
+    .notif-clear:hover { color: var(--cyan-dk); }
+    .notif-empty { font-size: 12px; color: var(--ink4); padding: 20px 16px; text-align: center; }
+    .notif-item {
+      display: flex; gap: 10px; align-items: flex-start;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.1s; cursor: pointer;
+    }
+    .notif-item:last-child { border-bottom: none; }
+    .notif-item:hover { background: var(--surface2); }
+    .notif-item.unread { background: var(--cyan-bg); }
+    .notif-item.unread:hover { background: rgba(24,184,212,0.15); }
+    .notif-ico { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+    .notif-body { flex: 1; min-width: 0; }
+    .notif-msg { font-size: 12px; color: var(--ink2); line-height: 1.5; font-weight: 500; }
+    .notif-time { font-size: 10px; color: var(--ink4); margin-top: 2px; font-family: var(--font-mono); }
+    .notif-badge {
+      font-size: 10px; font-weight: 700;
+      background: var(--red); color: white;
+      padding: 2px 6px; border-radius: 20px;
+      position: absolute; top: -4px; right: -4px;
+      min-width: 16px; text-align: center;
+      display: none;
+    }
+
+    /* ── PUBLISH ANIMATION ── */
+    @keyframes publishPop {
+      0% { transform: scale(1); }
+      40% { transform: scale(1.08); }
+      100% { transform: scale(1); }
+    }
+    .post-card.just-published {
+      animation: publishPop 0.4s ease;
+      border-color: var(--green) !important;
+      box-shadow: 0 0 0 2px rgba(34,197,94,0.2) !important;
+    }
+
+    /* ── VIEW HINT ── */
+    .view-hint {
+      font-size: 10px; color: var(--cyan-dk); font-weight: 600;
+      opacity: 0; transition: opacity 0.2s;
+      display: flex; align-items: center; gap: 3px;
+    }
+    .post-card-pub:hover .view-hint { opacity: 1; }
+    .post-card-pub { transition: all 0.2s; }
+    .post-card-pub:hover { border-color: var(--cyan-lt) !important; box-shadow: 0 4px 20px rgba(24,184,212,0.12) !important; }
+
+    /* ── MODALS ── */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 500;
+      background: rgba(26,37,64,0.55);
+      align-items: center; justify-content: center;
+      display: none;
+    }
+    .modal-overlay.open {
+      display: flex;
+      animation: fadeIn 0.2s ease;
+    }
+    @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+    .modal-box {
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius-xl);
+      width: 520px; max-width: 94vw;
+      box-shadow: 0 24px 60px rgba(26,37,64,0.22);
+      animation: slideUp 0.25s cubic-bezier(0.34,1.4,0.64,1);
+      overflow: hidden;
+    }
+    @keyframes slideUp { from{transform:translateY(24px);opacity:0} to{transform:translateY(0);opacity:1} }
+    .modal-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 22px 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    .modal-title { font-size: 15px; font-weight: 700; color: var(--ink); font-family: var(--font-head); }
+    .modal-close {
+      width: 28px; height: 28px; border-radius: 8px;
+      border: 1px solid var(--border); background: var(--surface2);
+      cursor: pointer; font-size: 12px; color: var(--ink3);
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s;
+    }
+    .modal-close:hover { background: var(--red-bg); color: var(--red); border-color: rgba(239,68,68,0.3); }
+    .modal-body { padding: 20px 22px 22px; }
+
+    /* detail modal content */
+    .detail-avatar-row { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .detail-avatar {
+      width: 44px; height: 44px; border-radius: 12px;
+      background: linear-gradient(135deg,var(--cyan),var(--blue));
+      color: white; font-family: var(--font-head); font-size: 16px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .detail-uname { font-size: 14px; font-weight: 700; color: var(--ink); }
+    .detail-handle { font-size: 11px; color: var(--ink4); }
+    .detail-content {
+      font-size: 15px; line-height: 1.75; color: var(--ink2);
+      white-space: pre-wrap; word-break: break-word;
+      background: var(--surface2); border-radius: var(--radius);
+      padding: 16px; border: 1px solid var(--border); margin-bottom: 16px;
+    }
+    .detail-meta-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+    .detail-chips { display: flex; gap: 6px; flex-wrap: wrap; }
+    .detail-date { font-size: 11px; font-family: var(--font-mono); color: var(--ink4); }
+    .detail-stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-top: 16px; }
+    .detail-stat {
+      background: var(--surface2); border-radius: var(--radius);
+      padding: 12px; text-align: center; border: 1px solid var(--border);
+    }
+    .detail-stat-val { font-family: var(--font-head); font-size: 20px; font-weight: 700; color: var(--ink); }
+    .detail-stat-lbl { font-size: 10px; color: var(--ink4); margin-top: 2px; font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 0.5px; }
+
+    /* ── TOAST ── */
+    .toast {
+      position: fixed; bottom: 24px; right: 24px; z-index: 9999;
+      background: rgba(26,37,64,0.92);
+      backdrop-filter: blur(16px);
+      color: white; border-radius: var(--radius-lg);
+      padding: 13px 20px;
+      display: flex; align-items: center; gap: 10px;
+      font-size: 13px; font-weight: 600;
+      box-shadow: 0 8px 32px rgba(30,50,100,0.25);
+      transform: translateY(80px); opacity: 0;
+      transition: all 0.35s cubic-bezier(0.34,1.56,0.64,1);
+      pointer-events: none; max-width: 340px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast-icon { font-size: 16px; flex-shrink: 0; }
+
+    /* ── ANIM ── */
+    @keyframes fadeUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+    .panel.active { }
+    button, input, textarea, select { pointer-events: auto; cursor: pointer; }
+    .card { position: relative; z-index: 1; }
+
+    /* ── GLOBAL CLICK FIX ── */
+    .topbar, .sidebar, .nav-tabs, .nav-tab,
+    .sidebar-item, .plat-btn, .media-btn,
+    .tool-btn, .tool-btn-ai, .btn-primary, .btn-ghost,
+    .filter-btn, .icon-btn, .post-card,
+    .notif-btn, .user-avatar, .notif-item,
+    .emoji-btn, .modal-close, .notif-clear,
+    .media-btn, .upload-zone, .cal-day,
+    .cal-nav button { 
+      pointer-events: auto !important; 
+      cursor: pointer;
+    }
+    textarea, input { pointer-events: auto !important; cursor: text; }
+  </style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div>
+    <div class="logo">
+      <div class="logo-mark">
+        <svg viewBox="0 0 18 18"><rect x="2" y="2" width="6" height="6" rx="1.5"/><rect x="10" y="2" width="6" height="6" rx="1.5"/><rect x="2" y="10" width="6" height="6" rx="1.5"/><circle cx="13" cy="13" r="3"/></svg>
+      </div>
+      <div>
+        POSTLA
+        <div class="logo-sub">SOCIAL SCHEDULER</div>
+      </div>
+    </div>
+  </div>
+  <div class="nav-tabs">
+    <button type="button" class="nav-tab active" onclick="switchTab('compose')">Compose</button>
+    <button type="button" class="nav-tab" onclick="switchTab('scheduled')">Scheduled</button>
+    <button type="button" class="nav-tab" onclick="switchTab('calendar')">Calendar</button>
+    <button type="button" class="nav-tab" onclick="switchTab('analytics')">Analytics</button>
+  </div>
+  <div class="user-zone">
+    <div class="notif-wrap" id="notif-wrap">
+      <div class="notif-btn" id="notif-bell" onclick="toggleNotifPanel()">
+        🔔
+        <span class="notif-dot" id="notif-dot" style="display:none"></span>
+      </div>
+      <div class="notif-panel" id="notif-panel" style="display:none">
+        <div class="notif-panel-header">
+          <span class="notif-panel-title">Notifications</span>
+          <button type="button" class="notif-clear" onclick="clearNotifs()">Clear all</button>
+        </div>
+        <div id="notif-list">
+          <div class="notif-empty">No notifications yet</div>
+        </div>
+      </div>
+    </div>
+    <div class="user-avatar">ME</div>
+  </div>
+</div>
+
+<!-- APP BODY -->
+<div class="app-body">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-section">Posts</div>
+    <div class="sidebar-item active" id="sb-scheduled" onclick="sidebarFilter(this,'scheduled')">
+      <span class="sidebar-icon">📅</span> Scheduled
+      <span class="sidebar-badge" id="badge-scheduled">3</span>
+    </div>
+    <div class="sidebar-item" id="sb-published" onclick="sidebarFilter(this,'published')">
+      <span class="sidebar-icon">✅</span> Published
+      <span class="sidebar-badge green" id="badge-published">4</span>
+    </div>
+    <div class="sidebar-item" id="sb-draft" onclick="sidebarFilter(this,'draft')">
+      <span class="sidebar-icon">📝</span> Drafts
+      <span class="sidebar-badge gray" id="badge-draft">2</span>
+    </div>
+    <div class="sidebar-item" id="sb-failed" onclick="sidebarFilter(this,'failed')">
+      <span class="sidebar-icon">⚠️</span> Failed
+      <span class="sidebar-badge red" id="badge-failed">1</span>
+    </div>
+
+    <div class="sidebar-section">Platforms</div>
+    <div class="sidebar-item" style="color:var(--tw)">
+      <span style="font-weight:900;font-size:14px;color:var(--tw)">𝕏</span> Twitter / X
+    </div>
+    <div class="sidebar-item" style="color:var(--ig)">
+      <span style="font-size:15px;color:var(--ig)">◉</span> Instagram
+    </div>
+    <div class="sidebar-item" style="color:var(--li)">
+      <span style="font-weight:900;font-size:13px;color:var(--li)">in</span> LinkedIn
+    </div>
+
+    <div class="quick-stat-box">
+      <div class="qs-label">Total posts</div>
+      <div class="qs-value" id="qs-total">10</div>
+      <div class="qs-sub">across all platforms</div>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- COMPOSE -->
+    <div class="panel active" id="panel-compose">
+      <div class="compose-wrap">
+        <div>
+          <div class="page-heading">Create new post</div>
+          <div class="page-sub">Draft, schedule, and publish across your connected platforms.</div>
+
+          <div class="card">
+            <div class="card-title">Select platforms</div>
+            <div class="platform-row">
+              <button type="button" class="plat-btn sel-tw" id="plat-tw" onclick="togglePlat(this,'tw')">
+                <span class="plat-dot" style="background:var(--tw)"></span>Twitter / X
+              </button>
+              <button type="button" class="plat-btn" id="plat-ig" onclick="togglePlat(this,'ig')">
+                <span class="plat-dot" style="background:var(--ig)"></span>Instagram
+              </button>
+              <button type="button" class="plat-btn" id="plat-li" onclick="togglePlat(this,'li')">
+                <span class="plat-dot" style="background:var(--li)"></span>LinkedIn
+              </button>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Media type</div>
+            <div class="media-row">
+              <button type="button" class="media-btn active" id="media-text" onclick="selectMedia(this,'text')">📄 Text only</button>
+              <button type="button" class="media-btn" id="media-image" onclick="selectMedia(this,'image')">🖼 Image</button>
+              <button type="button" class="media-btn" id="media-carousel" onclick="selectMedia(this,'carousel')">🎠 Carousel</button>
+              <button type="button" class="media-btn" id="media-video" onclick="selectMedia(this,'video')">🎬 Video</button>
+            </div>
+            <div id="media-upload-zone" style="display:none;margin-top:14px">
+              <div class="upload-zone" onclick="document.getElementById('file-input').click()">
+                <div class="upload-icon">⬆️</div>
+                <div class="upload-text">Click to upload or drag & drop</div>
+                <div class="upload-sub">PNG, JPG, GIF, MP4 up to 50MB</div>
+                <input type="file" id="file-input" accept="image/*,video/*" style="display:none" onchange="handleFileSelect(event)"/>
+              </div>
+              <div id="file-preview" style="display:none;margin-top:10px;position:relative">
+                <img id="preview-img" style="width:100%;border-radius:10px;max-height:160px;object-fit:cover"/>
+                <button onclick="clearFile()" style="position:absolute;top:6px;right:6px;background:rgba(0,0,0,0.5);color:white;border:none;border-radius:50%;width:24px;height:24px;cursor:pointer;font-size:12px">✕</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Post content</div>
+            <div class="editor-wrap">
+              <textarea class="post-textarea" id="post-content" placeholder="What would you like to share with your audience?" oninput="onTextInput()"></textarea>
+              <span class="char-count" id="char-count">0 / 280</span>
+            </div>
+            <div class="editor-toolbar">
+              <div class="toolbar-left">
+                <button type="button" class="tool-btn" title="Add emoji" onclick="toggleEmojiPicker(event)">😊</button>
+                <button type="button" class="tool-btn" title="Add location" onclick="insertText('📍 ')">📍</button>
+                <button type="button" class="tool-btn" title="Add hashtag" onclick="insertText('#')">＃</button>
+                <button type="button" class="tool-btn" title="Add mention" onclick="insertText('@')">＠</button>
+                <button type="button" class="tool-btn" title="Add link" onclick="insertText('https://')">🔗</button>
+              </div>
+              <div class="tool-btn-ai" onclick="showToast('AI suggestion coming soon!','✨')">✨ AI Suggest</div>
+            </div>
+            <div class="emoji-picker" id="emoji-picker" style="display:none">
+              <div class="emoji-grid" id="emoji-grid"></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Schedule date & time</div>
+            <div class="sched-row">
+              <div class="field-group">
+                <label class="field-label">Date</label>
+                <input type="date" class="field-input" id="sch-date" onchange="checkPast()"/>
+              </div>
+              <div class="field-group">
+                <label class="field-label">Time</label>
+                <input type="time" class="field-input" id="sch-time" onchange="checkPast()"/>
+              </div>
+            </div>
+            <div class="past-warn" id="past-warn">⚠ Cannot schedule in the past. Choose a future date and time.</div>
+          </div>
+
+          <div class="action-row">
+            <button type="button" class="btn-primary" onclick="schedulePost()">Schedule Post</button>
+            <button type="button" class="btn-ghost" onclick="saveDraft()">Save as Draft</button>
+          </div>
+        </div>
+
+        <div class="preview-col">
+          <div class="col-label">Live Preview</div>
+          <div class="preview-card">
+            <div class="preview-header">
+              <div class="prev-avatar">ME</div>
+              <div>
+                <div class="prev-uname">Your Account</div>
+                <div class="prev-handle">@youraccount</div>
+              </div>
+            </div>
+            <div class="prev-body" id="preview-body" style="color:var(--ink4);font-style:italic;font-size:12px">Start typing to see a preview...</div>
+            <div class="prev-chips" id="preview-chips"></div>
+          </div>
+
+          <div class="upcoming-card">
+            <div class="card-title">Upcoming posts</div>
+            <div id="upcoming-list"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCHEDULED -->
+    <div class="panel" id="panel-scheduled">
+      <div class="posts-toolbar">
+        <div>
+          <div class="page-heading">All Posts</div>
+          <div class="page-sub" style="margin:0">Manage and track your content pipeline.</div>
+        </div>
+        <div class="filter-row">
+          <button type="button" class="filter-btn active" onclick="filterPosts('all',this)">All</button>
+          <button type="button" class="filter-btn" onclick="filterPosts('scheduled',this)">Scheduled</button>
+          <button type="button" class="filter-btn" onclick="filterPosts('published',this)">Published</button>
+          <button type="button" class="filter-btn" onclick="filterPosts('draft',this)">Drafts</button>
+          <button type="button" class="filter-btn" onclick="filterPosts('failed',this)">Failed</button>
+        </div>
+      </div>
+      <div class="posts-list" id="posts-list"></div>
+    </div>
+
+    <!-- CALENDAR -->
+    <div class="panel" id="panel-calendar">
+      <div class="calendar-wrap">
+        <div class="cal-header">
+          <div>
+            <div class="page-heading" id="cal-month-lbl"></div>
+            <div class="page-sub" style="margin:0">Your posting calendar at a glance.</div>
+          </div>
+          <div class="cal-nav">
+            <button type="button" class="icon-btn" style="width:38px;height:38px;border-radius:12px" onclick="changeMonth(-1)">←</button>
+            <button type="button" class="icon-btn" style="width:38px;height:38px;border-radius:12px" onclick="changeMonth(1)">→</button>
+          </div>
+        </div>
+        <div class="cal-grid" id="cal-grid"></div>
+      </div>
+    </div>
+
+    <!-- ANALYTICS -->
+    <div class="panel" id="panel-analytics">
+      <div class="analytics-wrap">
+        <div>
+          <div class="page-heading">Analytics Overview</div>
+          <div class="page-sub">Track performance across all your platforms.</div>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">Total Posts</div>
+            <div class="stat-value" id="an-total">10</div>
+            <div class="stat-delta delta-up">↑ 25% this month</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Published</div>
+            <div class="stat-value" id="an-pub">4</div>
+            <div class="stat-delta delta-up">↑ 2 from last month</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Scheduled</div>
+            <div class="stat-value" id="an-sch">3</div>
+            <div class="stat-delta delta-neutral">Upcoming</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Failure Rate</div>
+            <div class="stat-value" id="an-fail">10%</div>
+            <div class="stat-delta delta-dn">↑ 5% vs last month</div>
+          </div>
+        </div>
+        <div class="bar-section">
+          <div class="bar-section-title">Posts published — last 7 days</div>
+          <div class="bars" id="bar-chart"></div>
+        </div>
+        <div>
+          <div class="page-heading" style="font-size:18px;margin-bottom:14px">Platform breakdown</div>
+          <div class="pf-grid">
+            <div class="pf-card">
+              <div class="pf-header"><span class="pf-dot" style="background:var(--tw)"></span>Twitter / X</div>
+              <div class="pf-count" id="pf-tw">5</div>
+              <div class="pf-sub">posts published</div>
+            </div>
+            <div class="pf-card">
+              <div class="pf-header"><span class="pf-dot" style="background:var(--ig)"></span>Instagram</div>
+              <div class="pf-count" id="pf-ig">3</div>
+              <div class="pf-sub">posts published</div>
+            </div>
+            <div class="pf-card">
+              <div class="pf-header"><span class="pf-dot" style="background:var(--li)"></span>LinkedIn</div>
+              <div class="pf-count" id="pf-li">2</div>
+              <div class="pf-sub">posts published</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- POST DETAIL MODAL -->
+<div class="modal-overlay" id="detail-overlay" onclick="closeDetailModal()" style="display:none">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <div class="modal-title">Published Post</div>
+      <button type="button" class="modal-close" onclick="closeDetailModal()">✕</button>
+    </div>
+    <div class="modal-body" id="detail-body"></div>
+  </div>
+</div>
+
+<!-- EDIT MODAL -->
+<div class="modal-overlay" id="edit-overlay" onclick="closeEditModal()" style="display:none">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <div class="modal-title">✏️ Edit Scheduled Post</div>
+      <button type="button" class="modal-close" onclick="closeEditModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="margin-bottom:14px">
+        <div class="field-label" style="margin-bottom:6px">Content</div>
+        <div class="editor-wrap">
+          <textarea class="post-textarea" id="edit-content" oninput="updateEditCount()" style="min-height:110px"></textarea>
+          <span class="char-count" id="edit-char-count">0 / 280</span>
+        </div>
+      </div>
+      <div class="sched-row" style="margin-bottom:18px">
+        <div class="field-group">
+          <label class="field-label">Date</label>
+          <input type="date" class="field-input" id="edit-date"/>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Time</label>
+          <input type="time" class="field-input" id="edit-time"/>
+        </div>
+      </div>
+      <div class="action-row">
+        <button type="button" class="btn-primary" onclick="saveEdit()">Save changes</button>
+        <button type="button" class="btn-ghost" onclick="closeEditModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span class="toast-icon" id="toast-icon">✅</span>
+  <span id="toast-msg">Done!</span>
+</div>
+
+<script>
+const TODAY = new Date();
+const todayStr = TODAY.toISOString().split('T')[0];
+
+function fd(days,h,m){const d=new Date(TODAY);d.setDate(d.getDate()+days);d.setHours(h,m,0,0);return d;}
+function pd(days,h,m){const d=new Date(TODAY);d.setDate(d.getDate()-days);d.setHours(h,m,0,0);return d;}
+
+let posts=[
+  {id:1,content:"Excited to share our new product launch next week! Stay tuned for something amazing.",platforms:['tw','li'],scheduledAt:fd(1,9,0),status:'scheduled'},
+  {id:2,content:"Behind the scenes of our creative process. How we build ideas from scratch every single day.",platforms:['ig'],scheduledAt:fd(2,11,30),status:'scheduled'},
+  {id:3,content:"Join us for a live Q&A session this Friday at 3PM EST. Drop your questions below!",platforms:['tw','ig','li'],scheduledAt:fd(4,15,0),status:'scheduled'},
+  {id:4,content:"We just hit 10,000 followers! Thank you all for your incredible support and love.",platforms:['tw','ig'],scheduledAt:pd(1,10,0),status:'published'},
+  {id:5,content:"New blog post: 5 ways to grow your social media presence in 2025.",platforms:['li'],scheduledAt:pd(3,9,0),status:'published'},
+  {id:6,content:"Happy Monday! Starting the week with positive energy and big goals ahead.",platforms:['tw'],scheduledAt:pd(5,8,0),status:'published'},
+  {id:7,content:"Check out our latest case study on how we helped a client triple their engagement.",platforms:['li'],scheduledAt:pd(7,14,0),status:'published'},
+  {id:8,content:"Draft idea: summer campaign messaging. Need to refine the tone a bit more.",platforms:['tw'],scheduledAt:null,status:'draft'},
+  {id:9,content:"Draft: Partnership announcement with collaborators — TBD on the exact date.",platforms:['ig','li'],scheduledAt:null,status:'draft'},
+  {id:10,content:"Giveaway post for our anniversary celebration — special prizes for followers!",platforms:['tw','ig'],scheduledAt:pd(2,12,0),status:'failed'},
+];
+let nextId=11, selPlats=['tw'], filterState='all';
+let curMonth=new Date(TODAY.getFullYear(),TODAY.getMonth(),1);
+
+function fmtShort(d){if(!d)return '';return d.toLocaleDateString('en-US',{month:'short',day:'numeric'})+' '+d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});}
+
+window.addEventListener('DOMContentLoaded',()=>{
+  const def=new Date(TODAY);def.setDate(def.getDate()+1);
+  document.getElementById('sch-date').value=def.toISOString().split('T')[0];
+  document.getElementById('sch-date').min=todayStr;
+  document.getElementById('sch-time').value='10:00';
+  renderUpcoming();renderPostsList();updateBadges();renderAnalytics();
+  initEmojiPicker();
+  document.addEventListener('click', e => {
+    if(!e.target.closest('#emoji-picker') && !e.target.closest('.tool-btn[title="Add emoji"]')) {
+      document.getElementById('emoji-picker').style.display='none';
+    }
+  });
+});
+
+// ── MEDIA ──
+function selectMedia(btn, type) {
+  document.querySelectorAll('.media-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const zone = document.getElementById('media-upload-zone');
+  zone.style.display = type === 'text' ? 'none' : 'block';
+  const inp = document.getElementById('file-input');
+  inp.accept = type === 'video' ? 'video/*' : 'image/*';
+}
+
+function handleFileSelect(e) {
+  const file = e.target.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    document.getElementById('preview-img').src = ev.target.result;
+    document.getElementById('file-preview').style.display='block';
+    document.querySelector('.upload-zone').style.display='none';
+    updatePreview();
+  };
+  reader.readAsDataURL(file);
+}
+
+function clearFile() {
+  document.getElementById('file-input').value='';
+  document.getElementById('file-preview').style.display='none';
+  document.querySelector('.upload-zone').style.display='block';
+  updatePreview();
+}
+
+// ── TOOLBAR ──
+function insertText(str) {
+  const ta = document.getElementById('post-content');
+  const start = ta.selectionStart, end = ta.selectionEnd;
+  ta.value = ta.value.substring(0,start) + str + ta.value.substring(end);
+  ta.selectionStart = ta.selectionEnd = start + str.length;
+  ta.focus(); onTextInput();
+}
+
+// ── EMOJI ──
+const EMOJIS = ['😀','😂','😍','🥰','😎','🤩','🎉','🔥','💯','✨','👏','🙌','💪','🚀','⭐','❤️','💙','💚','🎯','📢','📣','🌟','💡','🎊','🤝','👍','🏆','📸','🎬','📱','💻','🌍','⚡','🌈','🍀','🎵','💬','📝','✅','🔔'];
+
+function initEmojiPicker() {
+  const grid = document.getElementById('emoji-grid');
+  grid.innerHTML = EMOJIS.map(e=>`<button type="button" class="emoji-btn" onclick="insertEmoji('${e}')">${e}</button>`).join('');
+}
+
+function insertEmoji(emoji) {
+  insertText(emoji);
+  document.getElementById('emoji-picker').style.display='none';
+}
+
+function toggleEmojiPicker(e) {
+  e.stopPropagation();
+  const p = document.getElementById('emoji-picker');
+  p.style.display = p.style.display==='none' ? 'block' : 'none';
+}
+
+function switchTab(t){
+  document.querySelectorAll('.nav-tab').forEach((b,i)=>b.classList.toggle('active',['compose','scheduled','calendar','analytics'][i]===t));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+t).classList.add('active');
+  if(t==='scheduled')renderPostsList();
+  if(t==='calendar')renderCalendar();
+  if(t==='analytics')renderAnalytics();
+  if(t==='compose')renderUpcoming();
+}
+
+function sidebarFilter(el,f){
+  document.querySelectorAll('.sidebar-item').forEach(i=>i.classList.remove('active'));
+  el.classList.add('active');filterState=f;switchTab('scheduled');
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.toggle('active',b.textContent.toLowerCase()===f));
+}
+
+function togglePlat(btn,p){
+  if(selPlats.includes(p)){if(selPlats.length===1)return;selPlats=selPlats.filter(x=>x!==p);btn.className='plat-btn';}
+  else{selPlats.push(p);btn.className='plat-btn sel-'+p;}
+  updatePreview();updateCharCount();
+}
+
+function onTextInput(){updatePreview();updateCharCount();}
+
+function updateCharCount(){
+  const txt=document.getElementById('post-content').value;
+  const max=selPlats.includes('tw')?280:2200;
+  const el=document.getElementById('char-count');
+  el.textContent=txt.length+' / '+max;
+  el.classList.toggle('warn',txt.length>max*0.9);
+}
+
+function updatePreview(){
+  const txt=document.getElementById('post-content').value.trim();
+  const body=document.getElementById('preview-body');
+  const chips=document.getElementById('preview-chips');
+  if(!txt){body.style.fontStyle='italic';body.style.fontSize='12px';body.style.color='var(--ink4)';body.textContent='Start typing to see a preview...';chips.innerHTML='';return;}
+  body.style.fontStyle='normal';body.style.fontSize='13px';body.style.color='var(--ink2)';body.textContent=txt;
+  const m={tw:'Twitter/X',ig:'Instagram',li:'LinkedIn'},c={tw:'chip-tw',ig:'chip-ig',li:'chip-li'};
+  chips.innerHTML=selPlats.map(p=>`<span class="p-chip ${c[p]}">${m[p]}</span>`).join('');
+}
+
+function checkPast(){
+  const d=document.getElementById('sch-date').value,t=document.getElementById('sch-time').value;
+  const w=document.getElementById('past-warn');
+  if(!d||!t){w.style.display='none';return;}
+  w.style.display=new Date(d+'T'+t)<=new Date()?'block':'none';
+}
+
+function getSchedDate(){
+  const d=document.getElementById('sch-date').value,t=document.getElementById('sch-time').value;
+  if(!d||!t)return null;const dt=new Date(d+'T'+t);return dt<=new Date()?null:dt;
+}
+
+function schedulePost(){
+  const txt=document.getElementById('post-content').value.trim();
+  if(!txt){showToast('Please write some content first.','⚠️');return;}
+  const dt=getSchedDate();
+  if(!dt){document.getElementById('past-warn').style.display='block';showToast('Set a valid future date and time.','⚠️');return;}
+  posts.unshift({id:nextId++,content:txt,platforms:[...selPlats],scheduledAt:dt,status:'scheduled'});
+  document.getElementById('post-content').value='';updatePreview();updateCharCount();updateBadges();renderUpcoming();
+  showToast('Post scheduled for '+fmtShort(dt),'📅');
+}
+
+function saveDraft(){
+  const txt=document.getElementById('post-content').value.trim();
+  if(!txt){showToast('Please write some content first.','⚠️');return;}
+  posts.unshift({id:nextId++,content:txt,platforms:[...selPlats],scheduledAt:null,status:'draft'});
+  document.getElementById('post-content').value='';updatePreview();updateCharCount();updateBadges();
+  showToast('Saved as draft.','📝');
+}
+
+function updateBadges(){
+  ['scheduled','published','draft','failed'].forEach(s=>{
+    const el=document.getElementById('badge-'+s);if(el)el.textContent=posts.filter(p=>p.status===s).length;
+  });
+  document.getElementById('qs-total').textContent=posts.length;
+}
+
+function renderUpcoming(){
+  const c=document.getElementById('upcoming-list');
+  const list=posts.filter(p=>p.status==='scheduled').sort((a,b)=>a.scheduledAt-b.scheduledAt).slice(0,4);
+  if(!list.length){c.innerHTML='<div style="font-size:12px;color:var(--ink4);padding:8px 0">No upcoming posts yet.</div>';return;}
+  const cls={tw:'chip-tw',ig:'chip-ig',li:'chip-li'};
+  c.innerHTML=list.map(p=>`<div class="upcoming-item"><div class="upcoming-text">${p.content}</div><div class="upcoming-meta">${p.platforms.map(pl=>`<span class="p-chip ${cls[pl]}" style="font-size:9px">${pl.toUpperCase()}</span>`).join('')}<span class="upcoming-date">${fmtShort(p.scheduledAt)}</span></div></div>`).join('');
+}
+
+function renderPostsList(){
+  const c=document.getElementById('posts-list');
+  const filtered=filterState==='all'?posts:posts.filter(p=>p.status===filterState);
+  if(!filtered.length){c.innerHTML=`<div class="empty-state"><div class="empty-icon">📭</div><div class="empty-text">No posts here</div><div class="empty-sub">Create a new post in the Compose tab</div></div>`;return;}
+  const sc={scheduled:'sb-scheduled',published:'sb-published',draft:'sb-draft',failed:'sb-failed'};
+  const dc={scheduled:'pip-scheduled',published:'pip-published',draft:'pip-draft',failed:'pip-failed'};
+  const cc={tw:'chip-tw',ig:'chip-ig',li:'chip-li'};
+  const pn={tw:'Twitter/X',ig:'Instagram',li:'LinkedIn'};
+  c.innerHTML=filtered.map(p=>{
+    const isPublished = p.status==='published';
+    const isScheduled = p.status==='scheduled';
+    const isDraft     = p.status==='draft';
+    const clickAttr   = isPublished ? 'onclick="openPostDetail('+p.id+')" style="cursor:pointer"' : '';
+    const hoverHint   = isPublished ? '<span class="view-hint">👁 View full post</span>' : '';
+    const editBtn     = isScheduled ? '<button type="button" class="icon-btn" title="Edit post" onclick="openEditModal('+p.id+')">✏️</button>' : '';
+    const draftBtn    = isDraft     ? '<button type="button" class="icon-btn" title="Load to composer" onclick="loadDraft('+p.id+')">📤</button>' : '';
+    const cardClass   = 'post-card' + (isPublished ? ' post-card-pub' : '');
+    const pip         = dc[p.status];
+    const chips       = p.platforms.map(function(pl){ return '<span class="p-chip '+cc[pl]+'">'+pn[pl]+'</span>'; }).join('');
+    const dateStr     = p.scheduledAt ? '<span class="post-date">'+fmtShort(p.scheduledAt)+'</span>' : '';
+    const badge       = '<span class="status-badge '+sc[p.status]+'">'+p.status+'</span>';
+    const delBtn      = '<button type="button" class="icon-btn del" title="Delete" onclick="deletePost('+p.id+')">🗑</button>';
+    return '<div class="'+cardClass+'" '+clickAttr+'>'
+      + '<div class="status-pip '+pip+'"></div>'
+      + '<div class="post-body-col">'
+        + '<div class="post-preview-text">'+p.content+'</div>'
+        + '<div class="post-meta">'+chips+dateStr+badge+hoverHint+'</div>'
+      + '</div>'
+      + '<div class="post-actions" onclick="event.stopPropagation()">'+editBtn+draftBtn+delBtn+'</div>'
+      + '</div>';
+  }).join('');
+}
+
+function filterPosts(f,btn){
+  filterState=f;document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');renderPostsList();
+}
+
+function deletePost(id){posts=posts.filter(p=>p.id!==id);updateBadges();renderPostsList();showToast('Post deleted.','🗑');}
+
+function loadDraft(id){
+  const p=posts.find(x=>x.id===id);if(!p)return;
+  document.getElementById('post-content').value=p.content;
+  selPlats=[...p.platforms];
+  document.querySelectorAll('.plat-btn').forEach(btn=>{const m=btn.id.replace('plat-','');btn.className='plat-btn'+(selPlats.includes(m)?' sel-'+m:'');});
+  updatePreview();updateCharCount();switchTab('compose');showToast('Draft loaded into composer.','📝');
+}
+
+function renderCalendar(){
+  const year=curMonth.getFullYear(),month=curMonth.getMonth();
+  document.getElementById('cal-month-lbl').textContent=curMonth.toLocaleDateString('en-US',{month:'long',year:'numeric'});
+  const grid=document.getElementById('cal-grid');
+  const dows=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  let html=dows.map(d=>`<div class="cal-dow">${d}</div>`).join('');
+  const first=new Date(year,month,1).getDay();
+  const dim=new Date(year,month+1,0).getDate();
+  const prev=new Date(year,month,0).getDate();
+  const byDay={};
+  posts.filter(p=>p.scheduledAt).forEach(p=>{
+    const d=new Date(p.scheduledAt);
+    if(d.getFullYear()===year&&d.getMonth()===month){const k=d.getDate();if(!byDay[k])byDay[k]=[];byDay[k].push(p);}
+  });
+  for(let i=0;i<first;i++) html+=`<div class="cal-day other-month"><div class="cal-day-num">${prev-first+1+i}</div></div>`;
+  for(let d=1;d<=dim;d++){
+    const isT=year===TODAY.getFullYear()&&month===TODAY.getMonth()&&d===TODAY.getDate();
+    const evs=(byDay[d]||[]).slice(0,3).map(p=>`<div class="cal-event ev-${p.platforms[0]}">${p.content.substring(0,16)}…</div>`).join('');
+    html+=`<div class="cal-day${isT?' today':''}"><div class="cal-day-num">${d}</div>${evs}</div>`;
+  }
+  const total=first+dim,rem=total%7===0?0:7-(total%7);
+  for(let i=1;i<=rem;i++) html+=`<div class="cal-day other-month"><div class="cal-day-num">${i}</div></div>`;
+  grid.innerHTML=html;
+}
+
+function changeMonth(dir){curMonth.setMonth(curMonth.getMonth()+dir);renderCalendar();}
+
+function renderAnalytics(){
+  const total=posts.length,pub=posts.filter(p=>p.status==='published').length,
+        sch=posts.filter(p=>p.status==='scheduled').length,fail=posts.filter(p=>p.status==='failed').length;
+  document.getElementById('an-total').textContent=total;
+  document.getElementById('an-pub').textContent=pub;
+  document.getElementById('an-sch').textContent=sch;
+  document.getElementById('an-fail').textContent=Math.round((fail/Math.max(total,1))*100)+'%';
+  const days=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],counts=[1,2,0,1,0,2,1],max=Math.max(...counts);
+  document.getElementById('bar-chart').innerHTML=days.map((d,i)=>{
+    const h=max>0?Math.round((counts[i]/max)*100):4;
+    return `<div class="bar-col"><div class="bar-fill" style="height:${Math.max(h,4)}%;background:${counts[i]>0?'linear-gradient(to top,var(--cyan),var(--blue))':'var(--bg2)'}"></div><div class="bar-lbl">${d}</div></div>`;
+  }).join('');
+  document.getElementById('pf-tw').textContent=posts.filter(p=>p.platforms.includes('tw')&&p.status==='published').length;
+  document.getElementById('pf-ig').textContent=posts.filter(p=>p.platforms.includes('ig')&&p.status==='published').length;
+  document.getElementById('pf-li').textContent=posts.filter(p=>p.platforms.includes('li')&&p.status==='published').length;
+}
+
+// ── POST DETAIL MODAL (published) ──
+function openPostDetail(id) {
+  const p = posts.find(x=>x.id===id); if(!p) return;
+  const cc={tw:'chip-tw',ig:'chip-ig',li:'chip-li'};
+  const pn={tw:'Twitter/X',ig:'Instagram',li:'LinkedIn'};
+  const chips = p.platforms.map(pl=>`<span class="p-chip ${cc[pl]}">${pn[pl]}</span>`).join('');
+  // mock engagement stats for published posts
+  const likes    = Math.floor(Math.random()*800)+50;
+  const comments = Math.floor(Math.random()*120)+10;
+  const shares   = Math.floor(Math.random()*200)+20;
+  document.getElementById('detail-body').innerHTML = `
+    <div class="detail-avatar-row">
+      <div class="detail-avatar">ME</div>
+      <div>
+        <div class="detail-uname">Your Account</div>
+        <div class="detail-handle">@youraccount</div>
+      </div>
+    </div>
+    <div class="detail-content">${p.content}</div>
+    <div class="detail-meta-row">
+      <div class="detail-chips">${chips}</div>
+      <div class="detail-date">Published ${fmtShort(p.scheduledAt)}</div>
+    </div>
+    <div class="detail-stats">
+      <div class="detail-stat">
+        <div class="detail-stat-val">❤️ ${likes}</div>
+        <div class="detail-stat-lbl">Likes</div>
+      </div>
+      <div class="detail-stat">
+        <div class="detail-stat-val">💬 ${comments}</div>
+        <div class="detail-stat-lbl">Comments</div>
+      </div>
+      <div class="detail-stat">
+        <div class="detail-stat-val">🔁 ${shares}</div>
+        <div class="detail-stat-lbl">Shares</div>
+      </div>
+    </div>`;
+  document.getElementById('detail-overlay').classList.add('open'); document.getElementById('detail-overlay').style.display='flex';
+}
+function closeDetailModal(){ const el=document.getElementById('detail-overlay'); el.style.display='none'; el.classList.remove('open'); }
+
+// ── EDIT MODAL (scheduled only) ──
+let editingId = null;
+function openEditModal(id) {
+  const p = posts.find(x=>x.id===id); if(!p) return;
+  editingId = id;
+  document.getElementById('edit-content').value = p.content;
+  if(p.scheduledAt){
+    const d = new Date(p.scheduledAt);
+    document.getElementById('edit-date').value = d.toISOString().split('T')[0];
+    document.getElementById('edit-time').value = d.toTimeString().slice(0,5);
+  }
+  document.getElementById('edit-date').min = new Date().toISOString().split('T')[0];
+  updateEditCount();
+  document.getElementById('edit-overlay').classList.add('open'); document.getElementById('edit-overlay').style.display='flex';
+}
+function closeEditModal(){ const el=document.getElementById('edit-overlay'); el.style.display='none'; el.classList.remove('open'); editingId=null; }
+
+function updateEditCount(){
+  const txt = document.getElementById('edit-content').value;
+  const el  = document.getElementById('edit-char-count');
+  el.textContent = txt.length+' / 280';
+  el.classList.toggle('warn', txt.length > 252);
+}
+
+function saveEdit(){
+  const p = posts.find(x=>x.id===editingId); if(!p) return;
+  const txt = document.getElementById('edit-content').value.trim();
+  if(!txt){ showToast('Content cannot be empty.','⚠️'); return; }
+  const dv = document.getElementById('edit-date').value;
+  const tv = document.getElementById('edit-time').value;
+  const dt = dv && tv ? new Date(dv+'T'+tv) : null;
+  if(dt && dt <= new Date()){ showToast('Date must be in the future.','⚠️'); return; }
+  p.content = txt;
+  if(dt) p.scheduledAt = dt;
+  closeEditModal();
+  renderPostsList(); renderUpcoming();
+  showToast('Post updated successfully!','✏️');
+}
+
+// close modals on Escape
+document.addEventListener('keydown', e=>{
+  if(e.key==='Escape'){ closeDetailModal(); closeEditModal(); }
+});
+
+function showToast(msg,icon='✅', duration=3200){
+  const t=document.getElementById('toast');
+  document.getElementById('toast-msg').textContent=msg;
+  document.getElementById('toast-icon').textContent=icon;
+  t.classList.add('show');setTimeout(()=>t.classList.remove('show'),duration);
+}
+
+// ── NOTIFICATION SYSTEM ──
+let notifications = [];
+let unreadCount = 0;
+
+function addNotification(icon, msg) {
+  const now = new Date();
+  const timeStr = now.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+  notifications.unshift({ icon, msg, time: timeStr, unread: true, id: Date.now() });
+  unreadCount++;
+  renderNotifList();
+  updateNotifBadge();
+}
+
+function renderNotifList() {
+  const list = document.getElementById('notif-list');
+  if (!notifications.length) {
+    list.innerHTML = '<div class="notif-empty">No notifications yet</div>';
+    return;
+  }
+  list.innerHTML = notifications.slice(0, 12).map(n => `
+    <div class="notif-item ${n.unread ? 'unread' : ''}" onclick="markRead(${n.id})">
+      <div class="notif-ico">${n.icon}</div>
+      <div class="notif-body">
+        <div class="notif-msg">${n.msg}</div>
+        <div class="notif-time">${n.time}</div>
+      </div>
+    </div>`).join('');
+}
+
+function markRead(id) {
+  const n = notifications.find(x => x.id === id);
+  if (n && n.unread) { n.unread = false; unreadCount = Math.max(0, unreadCount-1); }
+  renderNotifList(); updateNotifBadge();
+}
+
+function clearNotifs() {
+  notifications = []; unreadCount = 0;
+  renderNotifList(); updateNotifBadge();
+  document.getElementById('notif-panel').style.display = 'none';
+}
+
+function updateNotifBadge() {
+  const dot = document.getElementById('notif-dot');
+  const bell = document.getElementById('notif-bell');
+  dot.style.display = unreadCount > 0 ? 'block' : 'none';
+  // shake bell on new notif
+  bell.style.animation = 'none';
+  requestAnimationFrame(() => { bell.style.animation = 'bell-shake 0.5s ease'; });
+}
+
+function toggleNotifPanel() {
+  const p = document.getElementById('notif-panel');
+  p.style.display = p.style.display === 'none' ? 'block' : 'none';
+}
+
+// close notif panel when clicking outside
+document.addEventListener('click', e => {
+  if (!e.target.closest('#notif-wrap')) {
+    const p = document.getElementById('notif-panel');
+    if (p) p.style.display = 'none';
+  }
+});
+
+// ── REAL-TIME AUTO-PUBLISH SCHEDULER ──
+function checkScheduledPosts() {
+  const now = new Date();
+  let published = 0;
+  posts.forEach(p => {
+    if (p.status === 'scheduled' && p.scheduledAt && new Date(p.scheduledAt) <= now) {
+      p.status = 'published';
+      published++;
+      const platNames = p.platforms.map(pl => ({tw:'Twitter/X',ig:'Instagram',li:'LinkedIn'}[pl])).join(', ');
+      addNotification('✅', `Published: "${p.content.substring(0,45)}${p.content.length>45?'…':''}" on ${platNames}`);
+      // Flash the post card if visible
+      setTimeout(() => {
+        const cards = document.querySelectorAll('.post-card');
+        cards.forEach(card => {
+          if (card.querySelector('.post-preview-text')?.textContent.includes(p.content.substring(0,20))) {
+            card.classList.add('just-published');
+            setTimeout(() => card.classList.remove('just-published'), 1000);
+          }
+        });
+      }, 100);
+    }
+  });
+  if (published > 0) {
+    updateBadges();
+    renderUpcoming();
+    if (filterState === 'scheduled' || filterState === 'all') renderPostsList();
+    renderAnalytics();
+    showToast(`🎉 ${published} post${published>1?'s':''} published successfully!`, '✅', 4000);
+  }
+}
+
+// Start the scheduler — check every 15 seconds
+setInterval(checkScheduledPosts, 15000);
+
+updateBadges();
+</script>
+</body>
+</html>
