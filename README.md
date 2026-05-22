@@ -4,10 +4,10 @@
 POSTLA Project
 
 ## Team Members
-- Deniz Onat Bayer
-- Umut Sevinç
-- Muhammet Salih Erol
-- Melik Koçhan
+- Deniz Onat Bayer - 22208334
+- Umut Sevinç - 22207663
+- Muhammet Salih Erol - 22314830
+- Melik Koçhan - 22207971
 
 ## Project Description
 This project focuses on project planning and scheduling for a software engineering project. The Gantt chart demonstrates task durations, dependencies, milestones, and resource allocation among team members.
